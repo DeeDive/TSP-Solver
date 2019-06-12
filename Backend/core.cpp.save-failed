@@ -1,0 +1,187 @@
+#include<bits/stdc++.h>
+#include"Node.h"
+using namespace std;
+//#define VNUM 8
+#define INF 1<<30-1
+struct Point{
+    double x,y;
+    friend double abs(Point & a ,Point & b);
+    friend istream & operator>>(istream & in, Point & a);
+};
+double abs(Point & a ,Point & b)
+{
+    return sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
+
+}
+istream & operator>>(istream & in, Point & a)
+{
+    in>>a.x>>a.y;
+}
+struct AMGraph{
+    double **g;
+    int vnum;
+    size_t * idx;
+    Point * vex;
+
+    AMGraph(int vnum);
+   // void ReadIn();
+    void buildGraph();
+    void showAM();
+    AMGraph * MST_Prim();
+    void preOrderTraverse(int root,vector<Node> * record,bool *vis);
+
+};
+AMGraph::AMGraph(int vnum):vnum(vnum)
+{
+    g = new double*[vnum];
+    for(int i=0;i<vnum;++i)
+        g[i] = new double[vnum];
+    vex = new Point[vnum];
+    idx = new size_t[vnum];
+}
+/*
+void AMGraph::ReadIn()
+{
+    int idx;
+    for(int i=0;i<vnum;++i)
+        cin>>idx>>vex[i];
+}
+*/
+void AMGraph::buildGraph()
+{
+    for(int i=0;i<vnum;++i)
+        for(int j=i;j<vnum;++j)
+        {
+            if(i==j)
+            {
+                g[i][j]=INF;
+            }
+            else
+            {
+                g[i][j]=g[j][i]=abs(vex[i],vex[j]);
+            }
+        }
+}
+void AMGraph::showAM()
+{
+    for(int i=0;i<vnum;++i,cout<<endl)
+        for(int j=0;j<vnum;++j)
+            cout<<setw(10)<<g[i][j]<<' ';
+}
+AMGraph * AMGraph::MST_Prim()
+{
+    AMGraph * T = new AMGraph(vnum);
+    for(int i=0;i<T->vnum;++i)
+        for(int j=i;j<T->vnum;++j)
+            T->g[i][j]=T->g[j][i]=INF;
+    bool inMST[vnum]={0};
+    inMST[0]=1;
+    int numDone=1;
+    double minCost[vnum];
+    int edgeTo[vnum];
+    for(int i=0;i<vnum;++i)
+    {
+        minCost[i]=g[0][i];
+        edgeTo[i]=0;
+    }
+    while(numDone<vnum)
+    {
+        int u = -1;
+        for(int i = 0;i<vnum;++i )
+        {
+            if(!inMST[i]&&(u==-1||minCost[i]<minCost[u]))
+            {
+                u=i;
+            }
+        }
+        //cout<<"edgeTo[u]"<<u<<' '<<edgeTo[u]<<endl;
+        T->g[u][edgeTo[u]]=T->g[edgeTo[u]][u]= g[u][edgeTo[u]];
+        inMST[u]=1;
+        for(int i = 0;i<vnum;++i )
+            if(minCost[i]>g[u][i])
+            {
+                minCost[i] = g[u][i];
+                edgeTo[i]=u;
+            }
+        ++numDone;
+    }
+    return T;
+}
+void AMGraph::preOrderTraverse(int root,vector<Node> * record,bool *vis)
+{
+    vis[root]=1;
+    record->push_back(Node(idx[root],vex[root].x,vex[root].y));
+    for(int i = 0;i<vnum;++i)
+        if(!vis[i]&&g[root][i]<INF)
+        {
+            preOrderTraverse(i,record,vis);
+        }
+}
+class TSPSolver{
+private:
+    AMGraph * mg;
+    //ALGraph * lg;
+    string filename;
+    int graphChoice;  //0 -> Adjacency Matrix : 1 -> Adjacency List
+public:
+    TSPSolver(string filename, int graphChoice = 0);
+    vector<Node> * Approx_TSP_Tour();
+};
+TSPSolver::TSPSolver(string filename, int graphChoice)
+{
+    ifstream in(filename);
+    if(!in)
+        cerr<<"Error in opening file"<<endl;
+    if(graphChoice==0)
+    {
+        cout<<"in";
+        string str;
+        int vnum;
+        while(in>>str)
+            if(str=="NODE_COORD_SECTION")
+            {
+                break;
+            }
+            else if(str=="DIMENSION")
+            {
+                in>>str; //':'
+                in>>vnum;
+                cout<<vnum;
+            }
+        cout<<vnum<<endl;
+
+        mg = new AMGraph(vnum);
+        cout<<"in";
+
+        //read in data
+        for(int i=0;i<vnum;++i)
+            in>>mg->idx[i]>>mg->vex[i];
+        for(int i=0;i<vnum;++i)
+            cout<<mg->idx[i]<<' '<<mg->vex[i].x<<mg->vex[i].y<<endl;
+        //build AMGraph
+        mg->buildGraph();
+    }
+    else if(graphChoice==1)
+    {
+        ;
+    }
+}
+vector<Node> * TSPSolver::Approx_TSP_Tour()
+{
+    vector<Node> * ret = new vector<Node>;
+    AMGraph * T = mg->MST_Prim();
+    //T->showAM();
+    bool vis[mg->vnum]={0};
+    int root = 0;
+    T->preOrderTraverse(root,ret,vis);
+    ret->push_back(Node(mg->idx[root],mg->vex[root].x,mg->vex[root].y));
+    return ret;
+}
+int main()
+{
+    TSPSolver tsp("default.tsp",0);
+    vector<Node> * tour = tsp.Approx_TSP_Tour();
+    //for(int i=0;i<tour->size();++i)
+        cout<<(*tour)[0].idx<<' '<<(*tour)[0].x<<' '<<(*tour)[0].y<<' ';
+    return 0;
+}

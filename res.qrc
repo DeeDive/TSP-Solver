@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>data/xqf131.tsp</file>
+        <file>data/pbl395.tsp</file>
+    </qresource>
+</RCC>
