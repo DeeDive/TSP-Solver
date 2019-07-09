@@ -20,7 +20,7 @@ In this project, we attempt to solve the problem by using **various classic algo
 	</p>
 </p>
 
-
+---
 ### History ###
 
 In the past few decades, many researchers have endeavored to solve the NPC problems, especially TSP. 
@@ -37,9 +37,12 @@ As a consequence, the scale of the problem we can solve is growing exponentially
 	</p>
 </p>
 
+---
+
 ### Data
 TSP solver supports both **random generated data** and **standardized data from TSPLIB OR VLSI Data Sets** .
 
+---
 ### Algorithms
 
 We implement nine classic algorithms to solve the TSP problem. Four of them are algorithms for exact solution, and the other five are algorithms for approximate solution. From my perspective, there is a trade-off between precision and time for algorithms that give approximate solution.
