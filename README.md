@@ -47,3 +47,12 @@ TSP solver supports both **random generated data** and **standardized data from 
 
 We implement nine classic algorithms to solve the TSP problem. Four of them are algorithms for exact solution, and the other five are algorithms for approximate solution. From my perspective, there is a trade-off between precision and time for algorithms that give approximate solution.
 
+---
+### Demo for instance with more cities
+
+<p align="center">
+	<img src="https://github.com/Infinitestudy/TSP-Solver/blob/master/demo-img/morecities.jpg" alt="morecities_instance"  width="70%" height="70%">
+	<p align="center">
+		<em>Figure 3. Solve instance with more cities</em>
+	</p>
+</p>
