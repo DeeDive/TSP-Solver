@@ -6,6 +6,7 @@ In this project, we attempt to solve the problem by using **various classic algo
 
 ---
 **Environment**
+
 + C++ 11/14/17
 + Qt 5.12
 
@@ -56,3 +57,7 @@ We implement nine classic algorithms to solve the TSP problem. Four of them are 
 		<em>Figure 3. Solve instance with more cities</em>
 	</p>
 </p>
+
+
+
+Note: Welcome to translate the lang. of program from Chinese to English and make an pull request.
